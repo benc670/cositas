@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalin para una linda Valentina</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+            background-image: url('fondo.webp'); /* Fondo personalizado */
+            background-size: cover;
+        }
+        #mensaje {
+            color: red;
+            font-size: 24px;
+            text-align: center;
+        }
+        #instrucciones {
+            margin-top: 10px;
+            text-align: center;
+        }
+        #boton-empezar {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .demonio {
+            width: 100px; /* Tamaño aumentado */
+            height: 100px; /* Tamaño aumentado */
+            background-image: url('demonio.webp'); /* Imagen personalizada para el demonio */
+            background-size: cover;
+            position: absolute;
+            display: none;
+        }
+        .demonio.derrotado {
+            background-image: url('ruta/a/tu/demonio_derrotado.png'); /* Imagen para demonio derrotado */
+        }
+        .carta {
+            width: 150px; /* Tamaño de la carta */
+            height: 150px; /* Tamaño de la carta */
+            background-image: url('carta.webp'); /* Imagen personalizada para la carta */
+            background-size: cover;
+            position: absolute;
+            display: none;
+            top: calc(50% - 75px);
+            left: calc(50% - 75px);
+        }
+        .mensaje-final {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid black;
+            z-index: 10;
+        }
+        .mensaje-resultado {
+            display: none;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #5a003f;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 20px;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mensaje">¡Feliz cumpleaños!</div>
+    <div id="instrucciones">Derrota al demonio presionando tu dedo por la pantalla para poder recuperar tu regalo.</div>
+    <button id="boton-empezar">Empezar</button>
+
+    <div class="demonio" id="demonio"></div>
+    <div class="carta" id="carta"></div>
+    <div class="mensaje-final" id="mensaje-final">¡Has recuperado la carta, parece que tiene un mensaje para ti!</div>
+    <div class="mensaje-resultado" id="mensaje-resultado">Bueno... Hice todo esto la verdad 
+        porque queria darte algo especial para una chica tan linda como tu. 
+        Me hubiera gustado poder darte algo mas creativo o algo que pudieras tocar, pero no pude ver que cosa hacer
+        y no tengo la habilidad para hacerlo asi que perdoname por favor, 
+        pero espero que por el momento te conformes con esto. 
+        No te preocupes, se podria decir que es una especie de aviso 
+        de que te dare algo que te guste y que merezcas. 
+        Asi que me gustaria aprovechar para poder decirte lo maravillosa que eres a través de mis ojos.
+        Cuando nos conocimos recuerdo que me puse nervioso al momento de llegar a mi casa 
+        porque no sabia como poder seguir hablando contigo, no queria que solo fuera una 
+        interaccion pasajera, queria seguir conversando contigo, asi que no sabes 
+        la emocion que me provoco que tu fueras la que inicio el chat, pero al menos me dio la iniciativa.
+        Cada vez que hablabamos pude corroborar lo que en verdad pensaba, que eres una gran persona, con
+        una maravillosa personalidad y que se merece todo lo bueno del mundo, tu unica inperfeccion
+        es que eres EMO y no le sabes a la gerarquia de los lobos alfa AUUUUU (perdon :p) Pero incluso con eso
+        Podria escucharte y leerte sin parar, es imposible cansarse de ti y que sepas que siempre me tendras a tu lado
+        por si tienes un problema, aunque no pueda de ser mucha ayuda algo minimo se que podre hacer. Bueno para terminar
+        este mensajito me gustaria decirte que Te kiero y espero que podamos seguir conociendonos más para que
+        te pueda dar un regalito que quede mejor para ti. Feliz cumpleaños Linda!!. <br>PDT: PERDON POR SER TAN CURSI <br>ATT: El Sigma Benja</div>
+
+    <audio id="sonidoDemonio" src="demonio.mp4"></audio>
+    <audio id="sonidoDerrotado" src=""></audio>
+    <audio id="musicaFondo" src="dororo.MP3" loop></audio>
+
+    <script>
+        let demoniosDerrotados = 0;
+        const totalDemonios = 10;
+        const demonioElement = document.getElementById('demonio');
+        const cartaElement = document.getElementById('carta');
+        const mensajeFinal = document.getElementById('mensaje-final');
+        const mensajeResultado = document.getElementById('mensaje-resultado');
+        const botonEmpezar = document.getElementById('boton-empezar');
+        const sonidoDemonio = document.getElementById('sonidoDemonio');
+        const sonidoDerrotado = document.getElementById('sonidoDerrotado');
+        const musicaFondo = document.getElementById('musicaFondo');
+
+        botonEmpezar.addEventListener('click', () => {
+            document.getElementById('mensaje').style.display = 'none'; // Ocultar mensaje de cumpleaños
+            document.getElementById('instrucciones').style.display = 'none'; // Ocultar instrucciones
+            botonEmpezar.style.display = 'none'; // Ocultar botón de empezar
+            musicaFondo.play(); // Reproducir música de fondo
+            iniciarJuego();
+        });
+
+        function iniciarJuego() {
+            mostrarDemonio();
+        }
+
+        function mostrarDemonio() {
+            if (demoniosDerrotados < totalDemonios) {
+                demonioElement.style.display = 'block';
+                demonioElement.style.top = Math.random() * 70 + 'vh'; // Posición aleatoria vertical
+                demonioElement.style.left = Math.random() * 70 + 'vw'; // Posición aleatoria horizontal
+                demonioElement.classList.remove('derrotado'); // Asegúrate de que el demonio sea rojo al aparecer
+
+                // Duración aleatoria entre 1 y 3 toques
+                let tapsRestantes = Math.floor(Math.random() * 3) + 1;
+
+                sonidoDemonio.play(); // Reproducir sonido al mostrar el demonio
+
+                demonioElement.onclick = function() {
+                    tapsRestantes--;
+                    if (tapsRestantes <= 0) {
+                        derrotarDemonio();
+                    }
+                };
+            }
+        }
+
+        function derrotarDemonio() {
+            sonidoDerrotado.play(); // Reproducir sonido al derrotar el demonio
+            demonioElement.classList.add('derrotado'); // Cambia la imagen al ser derrotado
+            demonioElement.style.display = 'none';
+            demoniosDerrotados++;
+            if (demoniosDerrotados === totalDemonios) {
+                mostrarMensajeFinal();
+            } else {
+                mostrarDemonio(); // Muestra un nuevo demonio
+            }
+        }
+
+        function mostrarMensajeFinal() {
+            mensajeFinal.style.display = 'block';
+            setTimeout(() => {
+                mensajeFinal.style.display = 'none';
+                mostrarCarta();
+            }, 5000); // Mostrar el mensaje por 5 segundos
+        }
+
+        function mostrarCarta() {
+            cartaElement.style.display = 'block';
+            cartaElement.addEventListener('click', abrirCarta);
+        }
+
+        function abrirCarta() {
+            cartaElement.style.display = 'none'; // Ocultar carta
+            mostrarMensajeResultado();
+        }
+
+        function mostrarMensajeResultado() {
+            mensajeResultado.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
